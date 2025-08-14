@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ssh.flowers - Магазин букетов</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Заголовок -->
+        <header class="header">
+            <h1>🌸 ssh.flowers</h1>
+            <div class="user-info">
+                <img id="user-avatar" src="" alt="Аватар" class="avatar">
+                <span id="user-name">Пользователь</span>
+            </div>
+        </header>
+
+        <!-- Главное меню -->
+        <main class="main-content">
+            <!-- Категории -->
+            <section class="categories">
+                <h2>📂 Категории букетов</h2>
+                <div class="category-grid">
+                    <div class="category-card" data-category="love">
+                        <div class="category-icon">🌹</div>
+                        <h3>Любимой</h3>
+                    </div>
+                    <div class="category-card" data-category="impress">
+                        <div class="category-icon">🎩</div>
+                        <h3>Козырнуть</h3>
+                    </div>
+                    <div class="category-card" data-category="sorry">
+                        <div class="category-icon">😅</div>
+                        <h3>Облажался</h3>
+                    </div>
+                    <div class="category-card" data-category="march8">
+                        <div class="category-icon">🌸</div>
+                        <h3>8 марта</h3>
+                    </div>
+                    <div class="category-card" data-category="birthday">
+                        <div class="category-icon">🎂</div>
+                        <h3>День рождения</h3>
+                    </div>
+                    <div class="category-card" data-category="any">
+                        <div class="category-icon">💐</div>
+                        <h3>На любой случай</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Конструктор букета -->
+            <section class="bouquet-builder">
+                <h2>🎨 Создать свой букет</h2>
+                <form id="bouquet-form">
+                    <div class="form-group">
+                        <label for="flower-count">Количество цветов:</label>
+                        <input type="number" id="flower-count" min="1" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="flower-types">Виды цветов:</label>
+                        <input type="text" id="flower-types" placeholder="Розы, тюльпаны..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="package">Упаковка:</label>
+                        <select id="package" required>
+                            <option value="">Выберите упаковку</option>
+                            <option value="paper">Бумага</option>
+                            <option value="ribbon">Лента</option>
+                            <option value="box">Коробка</option>
+                            <option value="basket">Корзинка</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="card">Открытка:</label>
+                        <textarea id="card" placeholder="Текст открытки (или 'нет')"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="wishes">Дополнительные пожелания:</label>
+                        <textarea id="wishes" placeholder="Ваши пожелания..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">💐 Создать букет</button>
+                </form>
+            </section>
+
+            <!-- Связаться -->
+            <section class="contact">
+                <h2>💌 Связаться с нами</h2>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="contact-message">Сообщение:</label>
+                        <textarea id="contact-message" placeholder="Напишите нам..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-secondary">📤 Отправить</button>
+                </form>
+            </section>
+        </main>
+
+        <!-- Модальное окно для заказа -->
+        <div id="order-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>📦 Ваш заказ</h2>
+                <div id="order-details"></div>
+                <button id="confirm-order" class="btn-primary">✅ Подтвердить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
