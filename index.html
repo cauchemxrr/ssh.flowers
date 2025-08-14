@@ -51,6 +51,15 @@
                 </div>
             </section>
 
+            <!-- Корзина -->
+            <section class="cart-section" id="cart-section" style="display: none;">
+                <h2>🛒 Корзина</h2>
+                <div id="cart-items"></div>
+                <div id="cart-total" class="cart-total"></div>
+                <button id="checkout-btn" class="btn-primary">💳 Оформить заказ</button>
+                <button id="clear-cart-btn" class="btn-secondary">🗑️ Очистить корзину</button>
+            </section>
+
             <!-- Конструктор букета -->
             <section class="bouquet-builder">
                 <h2>🎨 Создать свой букет</h2>
@@ -86,8 +95,19 @@
                         <textarea id="wishes" placeholder="Ваши пожелания..."></textarea>
                     </div>
                     
-                    <button type="submit" class="btn-primary">💐 Создать букет</button>
+                    <button type="submit" class="btn-primary">💐 Добавить в корзину</button>
                 </form>
+            </section>
+
+            <!-- Админ панель (только для вас) -->
+            <section class="admin-panel" id="admin-panel" style="display: none;">
+                <h2>⚙️ Админ панель</h2>
+                <div class="admin-controls">
+                    <button class="admin-btn" onclick="editCategories()">📝 Редактировать категории</button>
+                    <button class="admin-btn" onclick="viewOrders()">📦 Просмотр заказов</button>
+                    <button class="admin-btn" onclick="editPrices()">💰 Изменить цены</button>
+                    <button class="admin-btn" onclick="addFlowers()">🌺 Добавить цветы</button>
+                </div>
             </section>
 
             <!-- Связаться -->
@@ -110,6 +130,25 @@
                 <h2>📦 Ваш заказ</h2>
                 <div id="order-details"></div>
                 <button id="confirm-order" class="btn-primary">✅ Подтвердить заказ</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно для редактирования категорий -->
+        <div id="edit-categories-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>📝 Редактировать категории</h2>
+                <div id="categories-edit-form"></div>
+                <button id="save-categories" class="btn-primary">💾 Сохранить изменения</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно для просмотра заказов -->
+        <div id="orders-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>📦 Все заказы</h2>
+                <div id="orders-list"></div>
             </div>
         </div>
     </div>
