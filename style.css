@@ -1,17 +1,13 @@
-/* Modern Adult Design для ssh.flowers */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
 
 :root {
     --primary-bg: #190019;
     --secondary-bg: #2B124C;
     --accent-color: #854F6C;
     --accent-hover: #522B5B;
-    --text-primary: #FBE4D8;
-    --text-secondary: #DFB6B2;
+    --text-primary: #FFFFFF;
+    --text-secondary: #E8E8E8;
+    --text-muted: #D0D0D0;
     --border-color: #522B5B;
     --shadow-sm: 0 2px 8px rgba(25, 0, 25, 0.3);
     --shadow-md: 0 8px 24px rgba(25, 0, 25, 0.4);
@@ -22,19 +18,203 @@
     --gradient-accent: linear-gradient(135deg, #854F6C, #DFB6B2);
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Exo 2', 'Arial', sans-serif;
     background: var(--primary-bg);
     color: var(--text-primary);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    font-weight: 400;
+    overflow-x: hidden;
 }
 
-#app {
-    max-width: 100%;
-    min-height: 100vh;
-    background: linear-gradient(180deg, #190019 0%, #2B124C 100%);
+/* Заголовки с красивым шрифтом */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Основной текст с лучшим контрастом */
+p, span, div, label {
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Плейсхолдеры с лучшей видимостью */
+::placeholder {
+    color: var(--text-muted);
+    opacity: 0.9;
+}
+
+/* Инпуты с лучшим контрастом */
+input, textarea, select {
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: 'Exo 2', 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(133, 79, 108, 0.3);
+    background: #3A1A5A;
+}
+
+/* Кнопки с лучшим контрастом */
+.btn-primary, .admin-btn {
+    background: var(--gradient-accent);
+    color: var(--text-primary);
+    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+}
+
+.btn-primary:hover, .admin-btn:hover {
+    background: var(--gradient-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Модальные окна с лучшим контрастом */
+.modal-content {
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.modal-content h2 {
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Категории с лучшим контрастом */
+.category-card {
+    background: var(--gradient-primary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.category-card h3 {
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.category-card p {
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Букеты в категории с лучшим контрастом */
+.bouquet-item {
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.bouquet-item h4 {
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.bouquet-item p {
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.bouquet-price {
+    color: var(--accent-color);
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Пустое состояние с лучшим контрастом */
+.empty-state h3 {
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Админ панель с лучшим контрастом */
+.admin-panel h2 {
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.admin-section h3 {
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Заголовок приложения */
+.app-header h1 {
+    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    letter-spacing: 2px;
+}
+
+/* Улучшенные анимации */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.category-card, .bouquet-item, .admin-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover);
 }
 
 /* Header */
@@ -50,15 +230,17 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-.header h1 {
-    font-size: 2rem;
-    font-weight: 700;
+.app-header h1 {
+    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: none;
+    letter-spacing: 2px;
     margin-bottom: 12px;
-    letter-spacing: -0.02em;
 }
 
 .user-info {
@@ -74,7 +256,6 @@ body {
     border-radius: 50%;
     border: 2px solid var(--accent-color);
     object-fit: cover;
-    box-shadow: var(--shadow-sm);
 }
 
 /* Main Content */
@@ -126,6 +307,7 @@ section h2 {
     font-weight: 600;
     text-align: center;
     letter-spacing: -0.01em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Categories Grid */
@@ -138,7 +320,7 @@ section h2 {
 
 .category-card {
     background: var(--gradient-primary);
-    border: 1px solid rgba(82, 43, 91, 0.3);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-sm);
     padding: 32px 24px;
     text-align: center;
@@ -147,6 +329,8 @@ section h2 {
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .category-card::before {
@@ -181,16 +365,18 @@ section h2 {
 .category-card h3 {
     font-size: 1.375rem;
     font-weight: 600;
-    color: var(--text-primary);
     margin-bottom: 16px;
     letter-spacing: -0.01em;
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .category-card p {
-    color: var(--text-secondary);
     font-size: 0.95rem;
     line-height: 1.6;
     opacity: 0.9;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Bouquets in Category */
@@ -202,13 +388,14 @@ section h2 {
 }
 
 .bouquet-item {
-    background: rgba(43, 18, 76, 0.8);
-    border: 1px solid rgba(82, 43, 91, 0.3);
+    background: var(--secondary-bg);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-sm);
     padding: 24px;
     text-align: center;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    color: var(--text-primary);
 }
 
 .bouquet-item:hover {
@@ -234,25 +421,27 @@ section h2 {
 .bouquet-item h4 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-primary);
     margin-bottom: 12px;
     letter-spacing: -0.01em;
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .bouquet-item p {
-    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 20px;
     line-height: 1.6;
     opacity: 0.9;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .bouquet-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--accent-color);
     margin-bottom: 20px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: var(--accent-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Empty State */
@@ -272,14 +461,17 @@ section h2 {
 .empty-state h3 {
     font-size: 1.5rem;
     margin-bottom: 12px;
-    color: var(--text-primary);
     font-weight: 500;
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .empty-state p {
     font-size: 1rem;
     line-height: 1.6;
     opacity: 0.8;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Forms */
@@ -294,6 +486,7 @@ section h2 {
     color: var(--text-primary);
     font-size: 0.95rem;
     letter-spacing: 0.01em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .form-group input,
@@ -301,13 +494,14 @@ section h2 {
 .form-group textarea {
     width: 100%;
     padding: 16px 20px;
-    border: 1px solid rgba(82, 43, 91, 0.4);
+    border: 2px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-size: 16px;
     transition: all 0.3s ease;
-    background: rgba(43, 18, 76, 0.6);
+    background: var(--secondary-bg);
     color: var(--text-primary);
     backdrop-filter: blur(10px);
+    font-family: 'Exo 2', 'Arial', sans-serif;
 }
 
 .form-group input:focus,
@@ -316,12 +510,13 @@ section h2 {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(133, 79, 108, 0.2);
-    background: rgba(43, 18, 76, 0.8);
+    background: #3A1A5A;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-    color: rgba(223, 182, 178, 0.6);
+    color: var(--text-muted);
+    opacity: 0.9;
 }
 
 .form-group textarea {
@@ -329,47 +524,42 @@ section h2 {
     min-height: 100px;
 }
 
-/* Buttons */
-.btn-primary,
-.btn-secondary {
-    width: 100%;
-    padding: 18px 24px;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: none;
-    letter-spacing: 0.01em;
+/* File Upload */
+.file-upload {
     position: relative;
-    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
 }
 
-.btn-primary {
-    background: var(--gradient-accent);
-    color: var(--primary-bg);
-    box-shadow: var(--shadow-sm);
-    font-weight: 700;
+.file-upload input[type=file] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    filter: brightness(1.1);
+.file-upload-label {
+    display: block;
+    padding: 16px 20px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    background: var(--secondary-bg);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
-.btn-secondary {
-    background: rgba(43, 18, 76, 0.8);
-    color: var(--text-primary);
-    border: 1px solid rgba(82, 43, 91, 0.4);
-    backdrop-filter: blur(10px);
-}
-
-.btn-secondary:hover {
-    background: rgba(82, 43, 91, 0.8);
-    transform: translateY(-2px);
+.file-upload-label:hover {
     border-color: var(--accent-color);
+    background: #3A1A5A;
+}
+
+.file-upload-label.dragover {
+    border-color: var(--accent-color);
+    background: #3A1A5A;
 }
 
 /* Modal */
@@ -386,7 +576,7 @@ section h2 {
 }
 
 .modal-content {
-    background: var(--gradient-primary);
+    background: var(--secondary-bg);
     margin: 3% auto;
     padding: 40px;
     border-radius: var(--radius);
@@ -396,8 +586,9 @@ section h2 {
     overflow-y: auto;
     box-shadow: var(--shadow-lg);
     position: relative;
-    border: 1px solid rgba(82, 43, 91, 0.4);
+    border: 2px solid var(--border-color);
     backdrop-filter: blur(20px);
+    color: var(--text-primary);
 }
 
 .close {
@@ -411,6 +602,7 @@ section h2 {
     top: 24px;
     transition: all 0.3s ease;
     opacity: 0.7;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .close:hover {
@@ -436,7 +628,7 @@ section h2 {
 .admin-btn {
     padding: 16px 20px;
     background: var(--gradient-accent);
-    color: var(--primary-bg);
+    color: var(--text-primary);
     border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -444,6 +636,7 @@ section h2 {
     transition: all 0.3s ease;
     font-size: 0.95rem;
     letter-spacing: 0.01em;
+    font-family: 'Orbitron', 'Arial', sans-serif;
 }
 
 .admin-btn:hover {
@@ -468,13 +661,14 @@ section h2 {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 20px;
-    color: var(--text-primary);
     letter-spacing: -0.01em;
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .header h1 {
+    .app-header h1 {
         font-size: 1.75rem;
     }
     
@@ -514,7 +708,7 @@ section h2 {
         padding: 20px 16px;
     }
     
-    .header h1 {
+    .app-header h1 {
         font-size: 1.5rem;
     }
     
@@ -527,27 +721,6 @@ section h2 {
     }
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-section {
-    animation: fadeInUp 0.8s ease-out;
-}
-
-.category-card {
-    animation: fadeInUp 0.8s ease-out;
-    animation-delay: calc(var(--animation-order) * 0.15s);
-}
-
 /* Telegram Web App Integration */
 body {
     background-color: var(--tg-theme-bg-color, var(--primary-bg));
@@ -556,7 +729,7 @@ body {
 
 .btn-primary {
     background: var(--tg-theme-button-color, var(--gradient-accent));
-    color: var(--tg-theme-button-text-color, var(--primary-bg));
+    color: var(--tg-theme-button-text-color, var(--text-primary));
 }
 
 /* Loading States */
@@ -582,23 +755,4 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(43, 18, 76, 0.3);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--accent-color);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-hover);
 }
