@@ -20,49 +20,49 @@
 
         <!-- Главное меню -->
         <main class="main-content">
-            <!-- Категории -->
+            <!-- Категории букетов -->
             <section class="categories">
-                <h2>📂 Категории букетов</h2>
+                <h2>💐 Категории букетов</h2>
                 <div class="category-grid">
                     <div class="category-card" data-category="love">
                         <div class="category-icon">🌹</div>
                         <h3>Любимой</h3>
+                        <p>Романтичные букеты для самых важных людей</p>
                     </div>
                     <div class="category-card" data-category="impress">
                         <div class="category-icon">🎩</div>
                         <h3>Козырнуть</h3>
+                        <p>Элегантные композиции для особых случаев</p>
                     </div>
                     <div class="category-card" data-category="sorry">
                         <div class="category-icon">😅</div>
                         <h3>Облажался</h3>
+                        <p>Искренние букеты для примирения</p>
                     </div>
                     <div class="category-card" data-category="march8">
                         <div class="category-icon">🌸</div>
                         <h3>8 марта</h3>
+                        <p>Праздничные букеты для прекрасных дам</p>
                     </div>
                     <div class="category-card" data-category="birthday">
                         <div class="category-icon">🎂</div>
                         <h3>День рождения</h3>
+                        <p>Яркие букеты для особенного дня</p>
                     </div>
                     <div class="category-card" data-category="any">
                         <div class="category-icon">💐</div>
                         <h3>На любой случай</h3>
+                        <p>Универсальные букеты для любого повода</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Корзина -->
-            <section class="cart-section" id="cart-section" style="display: none;">
-                <h2>🛒 Корзина</h2>
-                <div id="cart-items"></div>
-                <div id="cart-total" class="cart-total"></div>
-                <button id="checkout-btn" class="btn-primary">💳 Оформить заказ</button>
-                <button id="clear-cart-btn" class="btn-secondary">🗑️ Очистить корзину</button>
-            </section>
-
-            <!-- Конструктор букета -->
+            <!-- Конструктор букета (без цен) -->
             <section class="bouquet-builder">
                 <h2>🎨 Создать свой букет</h2>
+                <p style="text-align: center; color: #6b7280; margin-bottom: 20px;">
+                    Опишите, что хотите, и мы свяжемся с вами для уточнения деталей и цены
+                </p>
                 <form id="bouquet-form">
                     <div class="form-group">
                         <label for="flower-count">Количество цветов:</label>
@@ -95,7 +95,7 @@
                         <textarea id="wishes" placeholder="Ваши пожелания..."></textarea>
                     </div>
                     
-                    <button type="submit" class="btn-primary">💐 Добавить в корзину</button>
+                    <button type="submit" class="btn-primary">💐 Отправить запрос</button>
                 </form>
             </section>
 
@@ -103,10 +103,9 @@
             <section class="admin-panel" id="admin-panel" style="display: none;">
                 <h2>⚙️ Админ панель</h2>
                 <div class="admin-controls">
-                    <button class="admin-btn" onclick="editCategories()">📝 Редактировать категории</button>
+                    <button class="admin-btn" onclick="manageBouquets()">🌺 Управление букетами</button>
                     <button class="admin-btn" onclick="viewOrders()">📦 Просмотр заказов</button>
-                    <button class="admin-btn" onclick="editPrices()">💰 Изменить цены</button>
-                    <button class="admin-btn" onclick="addFlowers()">🌺 Добавить цветы</button>
+                    <button class="admin-btn" onclick="manageCategories()">📂 Управление категориями</button>
                 </div>
             </section>
 
@@ -123,23 +122,57 @@
             </section>
         </main>
 
-        <!-- Модальное окно для заказа -->
-        <div id="order-modal" class="modal">
+        <!-- Модальное окно для просмотра букетов в категории -->
+        <div id="category-modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>📦 Ваш заказ</h2>
-                <div id="order-details"></div>
-                <button id="confirm-order" class="btn-primary">✅ Подтвердить заказ</button>
+                <h2 id="category-title">💐 Категория</h2>
+                <div id="bouquets-in-category"></div>
             </div>
         </div>
 
-        <!-- Модальное окно для редактирования категорий -->
-        <div id="edit-categories-modal" class="modal">
+        <!-- Модальное окно для управления букетами -->
+        <div id="manage-bouquets-modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>📝 Редактировать категории</h2>
-                <div id="categories-edit-form"></div>
-                <button id="save-categories" class="btn-primary">💾 Сохранить изменения</button>
+                <h2>🌺 Управление букетами</h2>
+                <div class="admin-section">
+                    <h3>Добавить новый букет</h3>
+                    <form id="add-bouquet-form">
+                        <div class="form-group">
+                            <label for="bouquet-category">Категория:</label>
+                            <select id="bouquet-category" required>
+                                <option value="love">🌹 Любимой</option>
+                                <option value="impress">🎩 Козырнуть</option>
+                                <option value="sorry">😅 Облажался</option>
+                                <option value="march8">🌸 8 марта</option>
+                                <option value="birthday">🎂 День рождения</option>
+                                <option value="any">💐 На любой случай</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bouquet-name">Название букета:</label>
+                            <input type="text" id="bouquet-name" placeholder="Название букета" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bouquet-description">Описание:</label>
+                            <textarea id="bouquet-description" placeholder="Описание букета" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="bouquet-price">Цена (₽):</label>
+                            <input type="number" id="bouquet-price" placeholder="1000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bouquet-image">URL изображения:</label>
+                            <input type="url" id="bouquet-image" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <button type="submit" class="btn-primary">➕ Добавить букет</button>
+                    </form>
+                </div>
+                <div class="admin-section">
+                    <h3>Существующие букеты</h3>
+                    <div id="existing-bouquets"></div>
+                </div>
             </div>
         </div>
 
@@ -149,6 +182,15 @@
                 <span class="close">&times;</span>
                 <h2>📦 Все заказы</h2>
                 <div id="orders-list"></div>
+            </div>
+        </div>
+
+        <!-- Модальное окно для управления категориями -->
+        <div id="manage-categories-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>📂 Управление категориями</h2>
+                <div id="categories-management"></div>
             </div>
         </div>
     </div>

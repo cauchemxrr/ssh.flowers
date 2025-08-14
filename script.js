@@ -2,9 +2,18 @@
 let tg = window.Telegram.WebApp;
 
 // Глобальные переменные
-let cart = [];
 let isAdmin = false;
 const ADMIN_ID = 5315749575; // Ваш Telegram ID
+
+// База данных букетов (в реальном приложении это будет в базе данных)
+let bouquetsDatabase = {
+    love: [],      // Любимой
+    impress: [],   // Козырнуть
+    sorry: [],     // Облажался
+    march8: [],    // 8 марта
+    birthday: [],  // День рождения
+    any: []        // На любой случай
+};
 
 // Инициализация приложения
 document.addEventListener('DOMContentLoaded', function() {
@@ -38,11 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Обработчики событий
     setupEventListeners();
     
-    // Загружаем корзину из localStorage
-    loadCart();
-    
-    // Обновляем отображение корзины
-    updateCartDisplay();
+    // Загружаем сохраненные букеты из localStorage
+    loadBouquetsFromStorage();
 });
 
 // Настройка обработчиков событий
@@ -51,14 +57,14 @@ function setupEventListeners() {
     document.querySelectorAll('.category-card').forEach(card => {
         card.addEventListener('click', function() {
             const category = this.dataset.category;
-            showCategoryInfo(category);
+            showCategoryBouquets(category);
         });
     });
     
     // Обработчик для формы создания букета
     document.getElementById('bouquet-form').addEventListener('submit', function(e) {
         e.preventDefault();
-        addToCart();
+        sendCustomBouquetRequest();
     });
     
     // Обработчик для формы связи
@@ -67,26 +73,17 @@ function setupEventListeners() {
         sendContactMessage();
     });
     
+    // Обработчик для формы добавления букета
+    document.getElementById('add-bouquet-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        addNewBouquet();
+    });
+    
     // Обработчики для модальных окон
     document.querySelectorAll('.close').forEach(closeBtn => {
         closeBtn.addEventListener('click', function() {
             this.closest('.modal').style.display = 'none';
         });
-    });
-    
-    // Обработчик для подтверждения заказа
-    document.getElementById('confirm-order').addEventListener('click', function() {
-        confirmOrder();
-    });
-    
-    // Обработчик для оформления заказа из корзины
-    document.getElementById('checkout-btn').addEventListener('click', function() {
-        checkoutFromCart();
-    });
-    
-    // Обработчик для очистки корзины
-    document.getElementById('clear-cart-btn').addEventListener('click', function() {
-        clearCart();
     });
     
     // Закрытие модальных окон при клике вне их
@@ -97,32 +94,81 @@ function setupEventListeners() {
     });
 }
 
-// Показать информацию о категории
-function showCategoryInfo(category) {
+// Показать букеты в категории
+function showCategoryBouquets(category) {
+    const modal = document.getElementById('category-modal');
+    const categoryTitle = document.getElementById('category-title');
+    const bouquetsContainer = document.getElementById('bouquets-in-category');
+    
+    // Устанавливаем заголовок
     const categoryNames = {
         'love': '🌹 Любимой',
         'impress': '🎩 Козырнуть',
-        'sorry': '😅 Облажался по крупному',
+        'sorry': '😅 Облажался',
         'march8': '🌸 8 марта',
         'birthday': '🎂 День рождения',
         'any': '💐 На любой случай'
     };
     
-    const categoryDescriptions = {
-        'love': 'Романтичные букеты для самых важных людей в вашей жизни',
-        'impress': 'Элегантные композиции, которые точно произведут впечатление',
-        'sorry': 'Искренние букеты для примирения и извинений',
-        'march8': 'Праздничные букеты для прекрасных дам',
-        'birthday': 'Яркие и веселые букеты для дня рождения',
-        'any': 'Универсальные букеты для любого повода'
-    };
+    categoryTitle.textContent = categoryNames[category] || '💐 Категория';
     
-    // Показываем уведомление
-    tg.showAlert(`${categoryNames[category]}\n\n${categoryDescriptions[category]}\n\nНажмите "Создать букет" для заказа!`);
+    // Получаем букеты для этой категории
+    const bouquets = bouquetsDatabase[category] || [];
+    
+    if (bouquets.length === 0) {
+        // Показываем сообщение "пока пусто"
+        bouquetsContainer.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🌺</div>
+                <h3>Пока тут пусто</h3>
+                <p>Но скоро появятся красивые букеты!<br>Следите за обновлениями.</p>
+            </div>
+        `;
+    } else {
+        // Показываем букеты
+        bouquetsContainer.innerHTML = `
+            <div class="bouquets-in-category">
+                ${bouquets.map(bouquet => `
+                    <div class="bouquet-item">
+                        <div class="bouquet-image">
+                            ${bouquet.image ? `<img src="${bouquet.image}" alt="${bouquet.name}">` : '🌺'}
+                        </div>
+                        <h4>${bouquet.name}</h4>
+                        <p>${bouquet.description}</p>
+                        <div class="bouquet-price">${bouquet.price.toLocaleString()} ₽</div>
+                        <button class="btn-primary" onclick="orderBouquet('${bouquet.name}', ${bouquet.price}, '${categoryNames[category]}')">Заказать</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    modal.style.display = 'block';
 }
 
-// Добавить букет в корзину
-function addToCart() {
+// Заказать букет
+function orderBouquet(name, price, category) {
+    const orderData = {
+        type: 'bouquet_order',
+        name: name,
+        price: price,
+        category: category,
+        user: tg.initDataUnsafe?.user || {},
+        timestamp: new Date().toISOString()
+    };
+    
+    // Отправляем данные в Telegram
+    tg.sendData(JSON.stringify(orderData));
+    
+    // Закрываем модальное окно
+    document.getElementById('category-modal').style.display = 'none';
+    
+    // Показываем подтверждение
+    tg.showAlert('✅ Ваш заказ принят! Наш менеджер свяжется с вами в ближайшее время.');
+}
+
+// Отправить запрос на создание букета
+function sendCustomBouquetRequest() {
     const formData = {
         count: document.getElementById('flower-count').value,
         flowers: document.getElementById('flower-types').value,
@@ -137,174 +183,22 @@ function addToCart() {
         return;
     }
     
-    // Добавляем в корзину
-    const bouquet = {
-        id: Date.now(),
+    // Формируем данные для отправки
+    const customBouquetData = {
+        type: 'custom_bouquet_request',
         ...formData,
-        price: calculatePrice(formData),
-        timestamp: new Date().toLocaleString()
-    };
-    
-    cart.push(bouquet);
-    saveCart();
-    updateCartDisplay();
-    
-    // Показываем корзину
-    document.getElementById('cart-section').style.display = 'block';
-    
-    // Очищаем форму
-    document.getElementById('bouquet-form').reset();
-    
-    // Показываем подтверждение
-    tg.showAlert('✅ Букет добавлен в корзину!');
-    
-    // Прокручиваем к корзине
-    document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
-}
-
-// Рассчитать цену букета
-function calculatePrice(data) {
-    let basePrice = 1000; // Базовая цена
-    basePrice += parseInt(data.count) * 50; // 50 руб за цветок
-    
-    // Доплата за упаковку
-    const packagePrices = {
-        'paper': 0,
-        'ribbon': 200,
-        'box': 500,
-        'basket': 800
-    };
-    
-    basePrice += packagePrices[data.package] || 0;
-    
-    // Доплата за открытку
-    if (data.card && data.card.trim() !== '' && data.card.toLowerCase() !== 'нет') {
-        basePrice += 150;
-    }
-    
-    return basePrice;
-}
-
-// Обновить отображение корзины
-function updateCartDisplay() {
-    const cartSection = document.getElementById('cart-section');
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    
-    if (cart.length === 0) {
-        cartSection.style.display = 'none';
-        return;
-    }
-    
-    cartSection.style.display = 'block';
-    
-    // Отображаем товары в корзине
-    cartItems.innerHTML = cart.map(item => `
-        <div class="cart-item">
-            <div>
-                <strong>${item.flowers}</strong><br>
-                <small>${item.count} цветов, ${item.package}</small>
-            </div>
-            <div>
-                <strong>${item.price} ₽</strong>
-                <button onclick="removeFromCart(${item.id})" style="margin-left: 10px; padding: 4px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">×</button>
-            </div>
-        </div>
-    `).join('');
-    
-    // Отображаем общую сумму
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    cartTotal.textContent = `Итого: ${total} ₽`;
-}
-
-// Удалить из корзины
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
-    saveCart();
-    updateCartDisplay();
-}
-
-// Очистить корзину
-function clearCart() {
-    cart = [];
-    saveCart();
-    updateCartDisplay();
-    tg.showAlert('🗑️ Корзина очищена!');
-}
-
-// Сохранить корзину в localStorage
-function saveCart() {
-    localStorage.setItem('ssh-flowers-cart', JSON.stringify(cart));
-}
-
-// Загрузить корзину из localStorage
-function loadCart() {
-    const savedCart = localStorage.getItem('ssh-flowers-cart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    }
-}
-
-// Оформить заказ из корзины
-function checkoutFromCart() {
-    if (cart.length === 0) {
-        tg.showAlert('Корзина пуста!');
-        return;
-    }
-    
-    showOrderDetails();
-}
-
-// Показать детали заказа
-function showOrderDetails() {
-    const orderDetails = document.getElementById('order-details');
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    
-    orderDetails.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <h3>📦 Заказ из корзины</h3>
-            <p><strong>Количество товаров:</strong> ${cart.length}</p>
-            <p><strong>Общая сумма:</strong> ${total} ₽</p>
-        </div>
-        <div style="max-height: 200px; overflow-y: auto; margin-bottom: 20px;">
-            ${cart.map(item => `
-                <div style="padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px;">
-                    <strong>${item.flowers}</strong><br>
-                    <small>${item.count} цветов, ${item.package}</small><br>
-                    <small>Цена: ${item.price} ₽</small>
-                </div>
-            `).join('')}
-        </div>
-    `;
-    
-    document.getElementById('order-modal').style.display = 'block';
-}
-
-// Подтверждение заказа
-function confirmOrder() {
-    const orderData = {
-        type: 'order',
-        items: cart,
-        total: cart.reduce((sum, item) => sum + item.price, 0),
         user: tg.initDataUnsafe?.user || {},
         timestamp: new Date().toISOString()
     };
     
     // Отправляем данные в Telegram
-    tg.sendData(JSON.stringify(orderData));
+    tg.sendData(JSON.stringify(customBouquetData));
     
-    // Закрываем модальное окно
-    document.getElementById('order-modal').style.display = 'none';
-    
-    // Очищаем корзину
-    clearCart();
+    // Очищаем форму
+    document.getElementById('bouquet-form').reset();
     
     // Показываем подтверждение
-    tg.showAlert('✅ Ваш заказ принят! Скоро с вами свяжемся.');
-    
-    // Показываем главное меню
-    tg.MainButton.setText('🌸 Вернуться в магазин');
-    tg.MainButton.show();
+    tg.showAlert('✅ Ваш запрос отправлен! Мы свяжемся с вами для уточнения деталей и цены.');
 }
 
 // Отправка сообщения для связи
@@ -334,64 +228,128 @@ function sendContactMessage() {
 
 // АДМИН ФУНКЦИИ
 
-// Редактировать категории
-function editCategories() {
-    const modal = document.getElementById('edit-categories-modal');
-    const form = document.getElementById('categories-edit-form');
+// Управление букетами
+function manageBouquets() {
+    const modal = document.getElementById('manage-bouquets-modal');
+    modal.style.display = 'block';
     
-    form.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <p>Здесь вы можете редактировать категории букетов</p>
-            <button class="admin-btn" onclick="addNewCategory()">➕ Добавить категорию</button>
+    // Показываем существующие букеты
+    showExistingBouquets();
+}
+
+// Показать существующие букеты
+function showExistingBouquets() {
+    const container = document.getElementById('existing-bouquets');
+    let allBouquets = [];
+    
+    // Собираем все букеты из всех категорий
+    Object.keys(bouquetsDatabase).forEach(category => {
+        bouquetsDatabase[category].forEach(bouquet => {
+            allBouquets.push({ ...bouquet, category });
+        });
+    });
+    
+    if (allBouquets.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #6b7280;">Пока нет добавленных букетов</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div style="max-height: 300px; overflow-y: auto;">
+            ${allBouquets.map(bouquet => `
+                <div style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                    <div style="flex: 1;">
+                        <strong>${bouquet.name}</strong><br>
+                        <small>${getCategoryName(bouquet.category)}</small>
+                    </div>
+                    <div style="margin-right: 10px;">
+                        <strong>${bouquet.price} ₽</strong>
+                    </div>
+                    <button class="admin-btn" onclick="deleteBouquet('${bouquet.name}', '${bouquet.category}')" style="background: #ef4444;">🗑️</button>
+                </div>
+            `).join('')}
         </div>
-        <div id="categories-list">
-            ${getCategoriesList()}
+    `;
+}
+
+// Получить название категории
+function getCategoryName(category) {
+    const categoryNames = {
+        'love': '🌹 Любимой',
+        'impress': '🎩 Козырнуть',
+        'sorry': '😅 Облажался',
+        'march8': '🌸 8 марта',
+        'birthday': '🎂 День рождения',
+        'any': '💐 На любой случай'
+    };
+    return categoryNames[category] || category;
+}
+
+// Добавить новый букет
+function addNewBouquet() {
+    const category = document.getElementById('bouquet-category').value;
+    const name = document.getElementById('bouquet-name').value;
+    const description = document.getElementById('bouquet-description').value;
+    const price = parseInt(document.getElementById('bouquet-price').value);
+    const image = document.getElementById('bouquet-image').value;
+    
+    if (!category || !name || !description || !price) {
+        tg.showAlert('Пожалуйста, заполните все обязательные поля!');
+        return;
+    }
+    
+    // Создаем новый букет
+    const newBouquet = {
+        id: Date.now(),
+        name: name,
+        description: description,
+        price: price,
+        image: image || null
+    };
+    
+    // Добавляем в базу данных
+    if (!bouquetsDatabase[category]) {
+        bouquetsDatabase[category] = [];
+    }
+    bouquetsDatabase[category].push(newBouquet);
+    
+    // Сохраняем в localStorage
+    saveBouquetsToStorage();
+    
+    // Очищаем форму
+    document.getElementById('add-bouquet-form').reset();
+    
+    // Обновляем список существующих букетов
+    showExistingBouquets();
+    
+    // Показываем подтверждение
+    tg.showAlert('✅ Букет успешно добавлен!');
+}
+
+// Удалить букет
+function deleteBouquet(name, category) {
+    if (confirm(`Удалить букет "${name}"?`)) {
+        bouquetsDatabase[category] = bouquetsDatabase[category].filter(b => b.name !== name);
+        saveBouquetsToStorage();
+        showExistingBouquets();
+        tg.showAlert('🗑️ Букет удален!');
+    }
+}
+
+// Управление категориями
+function manageCategories() {
+    const modal = document.getElementById('manage-categories-modal');
+    const container = document.getElementById('categories-management');
+    
+    container.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <p>Управление категориями</p>
+            <p>Здесь вы можете редактировать названия и описания категорий</p>
+            <p style="color: #6b7280; font-size: 0.875rem;">Функция в разработке</p>
         </div>
     `;
     
     modal.style.display = 'block';
-}
-
-// Получить список категорий
-function getCategoriesList() {
-    const categories = [
-        { id: 'love', name: 'Любимой', icon: '🌹' },
-        { id: 'impress', name: 'Козырнуть', icon: '🎩' },
-        { id: 'sorry', name: 'Облажался', icon: '😅' },
-        { id: 'march8', name: '8 марта', icon: '🌸' },
-        { id: 'birthday', name: 'День рождения', icon: '🎂' },
-        { id: 'any', name: 'На любой случай', icon: '💐' }
-    ];
-    
-    return categories.map(cat => `
-        <div style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;">
-            <span style="font-size: 24px; margin-right: 10px;">${cat.icon}</span>
-            <input type="text" value="${cat.name}" style="flex: 1; margin-right: 10px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px;">
-            <button class="admin-btn" onclick="deleteCategory('${cat.id}')" style="background: #ef4444;">🗑️</button>
-        </div>
-    `).join('');
-}
-
-// Добавить новую категорию
-function addNewCategory() {
-    const categoriesList = document.getElementById('categories-list');
-    const newCategory = `
-        <div style="display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;">
-            <input type="text" placeholder="🌺" style="width: 60px; margin-right: 10px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px;">
-            <input type="text" placeholder="Название категории" style="flex: 1; margin-right: 10px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 4px;">
-            <button class="admin-btn" onclick="this.parentElement.remove()" style="background: #ef4444;">🗑️</button>
-        </div>
-    `;
-    
-    categoriesList.insertAdjacentHTML('beforeend', newCategory);
-}
-
-// Удалить категорию
-function deleteCategory(id) {
-    if (confirm('Удалить категорию?')) {
-        // Здесь логика удаления
-        tg.showAlert('Категория удалена!');
-    }
 }
 
 // Просмотр заказов
@@ -409,14 +367,21 @@ function viewOrders() {
     modal.style.display = 'block';
 }
 
-// Изменить цены
-function editPrices() {
-    tg.showAlert('Функция изменения цен будет добавлена в следующем обновлении!');
+// Сохранить букеты в localStorage
+function saveBouquetsToStorage() {
+    localStorage.setItem('ssh-flowers-bouquets', JSON.stringify(bouquetsDatabase));
 }
 
-// Добавить цветы
-function addFlowers() {
-    tg.showAlert('Функция добавления цветов будет добавлена в следующем обновлении!');
+// Загрузить букеты из localStorage
+function loadBouquetsFromStorage() {
+    const saved = localStorage.getItem('ssh-flowers-bouquets');
+    if (saved) {
+        try {
+            bouquetsDatabase = JSON.parse(saved);
+        } catch (e) {
+            console.error('Ошибка загрузки букетов:', e);
+        }
+    }
 }
 
 // Обработка нажатия на главную кнопку
