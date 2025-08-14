@@ -1,21 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-    --primary-bg: #190019;
-    --secondary-bg: #2B124C;
-    --accent-color: #854F6C;
-    --accent-hover: #522B5B;
-    --text-primary: #FFFFFF;
-    --text-secondary: #E8E8E8;
-    --text-muted: #D0D0D0;
-    --border-color: #522B5B;
-    --shadow-sm: 0 2px 8px rgba(25, 0, 25, 0.3);
-    --shadow-md: 0 8px 24px rgba(25, 0, 25, 0.4);
-    --shadow-lg: 0 16px 48px rgba(25, 0, 25, 0.5);
+    --primary-bg: #302f2c;
+    --secondary-bg: #3a3936;
+    --accent-color: #8b7d6b;
+    --accent-hover: #7a6d5d;
+    --text-primary: #efede3;
+    --text-secondary: #d4d2c8;
+    --text-muted: #b8b6ac;
+    --border-color: #5a5956;
+    --shadow-sm: 0 2px 8px rgba(48, 47, 44, 0.3);
+    --shadow-md: 0 8px 24px rgba(48, 47, 44, 0.4);
+    --shadow-lg: 0 16px 48px rgba(48, 47, 44, 0.5);
     --radius: 16px;
     --radius-sm: 12px;
-    --gradient-primary: linear-gradient(135deg, #2B124C, #522B5B);
-    --gradient-accent: linear-gradient(135deg, #854F6C, #DFB6B2);
+    --gradient-primary: linear-gradient(135deg, #3a3936, #5a5956);
+    --gradient-accent: linear-gradient(135deg, #8b7d6b, #a89b8a);
 }
 
 * {
@@ -25,31 +25,35 @@
 }
 
 body {
-    font-family: 'Exo 2', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     background: var(--primary-bg);
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Заголовки с красивым шрифтом */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     font-weight: 700;
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: -0.02em;
 }
 
 /* Основной текст с лучшим контрастом */
 p, span, div, label {
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: 400;
 }
 
 /* Плейсхолдеры с лучшей видимостью */
 ::placeholder {
     color: var(--text-muted);
-    opacity: 0.9;
+    opacity: 0.8;
 }
 
 /* Инпуты с лучшим контрастом */
@@ -57,7 +61,7 @@ input, textarea, select {
     background: var(--secondary-bg);
     border: 2px solid var(--border-color);
     color: var(--text-primary);
-    font-family: 'Exo 2', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     font-size: 16px;
     padding: 12px 16px;
     border-radius: var(--radius-sm);
@@ -68,15 +72,15 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(133, 79, 108, 0.3);
-    background: #3A1A5A;
+    box-shadow: 0 0 0 3px rgba(139, 125, 107, 0.2);
+    background: #4a4946;
 }
 
 /* Кнопки с лучшим контрастом */
 .btn-primary, .admin-btn {
     background: var(--gradient-accent);
     color: var(--text-primary);
-    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     font-weight: 600;
     font-size: 16px;
     padding: 14px 24px;
@@ -85,8 +89,8 @@ input:focus, textarea:focus, select:focus {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-md);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.01em;
 }
 
 .btn-primary:hover, .admin-btn:hover {
@@ -104,7 +108,7 @@ input:focus, textarea:focus, select:focus {
 
 .modal-content h2 {
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Категории с лучшим контрастом */
@@ -112,75 +116,125 @@ input:focus, textarea:focus, select:focus {
     background: var(--gradient-primary);
     border: 2px solid var(--border-color);
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .category-card h3 {
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .category-card p {
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Букеты в категории с лучшим контрастом */
 .bouquet-item {
     background: var(--secondary-bg);
     border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
     color: var(--text-primary);
+}
+
+.bouquet-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-color);
+}
+
+.bouquet-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.bouquet-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    transition: transform 0.3s ease;
+}
+
+.bouquet-image:hover img {
+    transform: scale(1.05);
 }
 
 .bouquet-item h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .bouquet-item p {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    opacity: 0.9;
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .bouquet-price {
-    color: var(--accent-color);
+    font-size: 1.5rem;
     font-weight: 700;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    color: var(--accent-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Пустое состояние с лучшим контрастом */
 .empty-state h3 {
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .empty-state p {
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Админ панель с лучшим контрастом */
 .admin-panel h2 {
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .admin-section h3 {
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Заголовок приложения */
 .app-header h1 {
-    font-family: 'Orbitron', 'Arial', sans-serif;
-    font-weight: 900;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 800;
     font-size: 2.5rem;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: none;
-    letter-spacing: 2px;
+    letter-spacing: -0.03em;
 }
 
 /* Улучшенные анимации */
@@ -219,11 +273,11 @@ input:focus, textarea:focus, select:focus {
 
 /* Header */
 .header {
-    background: rgba(43, 18, 76, 0.95);
+    background: rgba(58, 57, 54, 0.95);
     backdrop-filter: blur(20px);
     padding: 24px 20px;
     text-align: center;
-    border-bottom: 1px solid rgba(82, 43, 91, 0.3);
+    border-bottom: 1px solid rgba(90, 89, 86, 0.3);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -231,15 +285,15 @@ input:focus, textarea:focus, select:focus {
 }
 
 .app-header h1 {
-    font-family: 'Orbitron', 'Arial', sans-serif;
-    font-weight: 900;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-weight: 800;
     font-size: 2.5rem;
     background: var(--gradient-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: none;
-    letter-spacing: 2px;
+    letter-spacing: -0.03em;
     margin-bottom: 12px;
 }
 
@@ -266,12 +320,12 @@ input:focus, textarea:focus, select:focus {
 }
 
 section {
-    background: rgba(43, 18, 76, 0.6);
+    background: rgba(58, 57, 54, 0.6);
     backdrop-filter: blur(10px);
     border-radius: var(--radius);
     padding: 32px;
     margin-bottom: 32px;
-    border: 1px solid rgba(82, 43, 91, 0.2);
+    border: 1px solid rgba(90, 89, 86, 0.2);
     box-shadow: var(--shadow-sm);
     transition: all 0.3s ease;
     position: relative;
@@ -297,7 +351,7 @@ section:hover::before {
 section:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
-    border-color: rgba(133, 79, 108, 0.4);
+    border-color: rgba(139, 125, 107, 0.4);
 }
 
 section h2 {
@@ -307,7 +361,7 @@ section h2 {
     font-weight: 600;
     text-align: center;
     letter-spacing: -0.01em;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Categories Grid */
@@ -330,7 +384,7 @@ section h2 {
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .category-card::before {
@@ -340,7 +394,7 @@ section h2 {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(133, 79, 108, 0.1), rgba(223, 182, 178, 0.05));
+    background: linear-gradient(135deg, rgba(139, 125, 107, 0.1), rgba(168, 155, 138, 0.05));
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -368,7 +422,7 @@ section h2 {
     margin-bottom: 16px;
     letter-spacing: -0.01em;
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .category-card p {
@@ -376,7 +430,7 @@ section h2 {
     line-height: 1.6;
     opacity: 0.9;
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Bouquets in Category */
@@ -406,7 +460,7 @@ section h2 {
 
 .bouquet-image {
     width: 100%;
-    height: 220px;
+    height: 200px;
     object-fit: cover;
     border-radius: var(--radius-sm);
     margin-bottom: 20px;
@@ -416,6 +470,21 @@ section h2 {
     justify-content: center;
     font-size: 3.5rem;
     box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.bouquet-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    transition: transform 0.3s ease;
+}
+
+.bouquet-image:hover img {
+    transform: scale(1.05);
 }
 
 .bouquet-item h4 {
@@ -424,7 +493,7 @@ section h2 {
     margin-bottom: 12px;
     letter-spacing: -0.01em;
     color: var(--text-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .bouquet-item p {
@@ -433,7 +502,7 @@ section h2 {
     line-height: 1.6;
     opacity: 0.9;
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .bouquet-price {
@@ -441,7 +510,7 @@ section h2 {
     font-weight: 700;
     margin-bottom: 20px;
     color: var(--accent-color);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Empty State */
@@ -463,7 +532,7 @@ section h2 {
     margin-bottom: 12px;
     font-weight: 500;
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .empty-state p {
@@ -471,7 +540,7 @@ section h2 {
     line-height: 1.6;
     opacity: 0.8;
     color: var(--text-secondary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Forms */
@@ -486,7 +555,7 @@ section h2 {
     color: var(--text-primary);
     font-size: 0.95rem;
     letter-spacing: 0.01em;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .form-group input,
@@ -501,7 +570,7 @@ section h2 {
     background: var(--secondary-bg);
     color: var(--text-primary);
     backdrop-filter: blur(10px);
-    font-family: 'Exo 2', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 .form-group input:focus,
@@ -509,14 +578,14 @@ section h2 {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(133, 79, 108, 0.2);
-    background: #3A1A5A;
+    box-shadow: 0 0 0 3px rgba(139, 125, 107, 0.2);
+    background: #4a4946;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
     color: var(--text-muted);
-    opacity: 0.9;
+    opacity: 0.8;
 }
 
 .form-group textarea {
@@ -554,12 +623,12 @@ section h2 {
 
 .file-upload-label:hover {
     border-color: var(--accent-color);
-    background: #3A1A5A;
+    background: #4a4946;
 }
 
 .file-upload-label.dragover {
     border-color: var(--accent-color);
-    background: #3A1A5A;
+    background: #4a4946;
 }
 
 /* Modal */
@@ -571,7 +640,7 @@ section h2 {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(25, 0, 25, 0.8);
+    background-color: rgba(48, 47, 44, 0.8);
     backdrop-filter: blur(8px);
 }
 
@@ -602,7 +671,7 @@ section h2 {
     top: 24px;
     transition: all 0.3s ease;
     opacity: 0.7;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .close:hover {
@@ -613,8 +682,8 @@ section h2 {
 
 /* Admin Panel */
 .admin-panel {
-    background: linear-gradient(135deg, rgba(43, 18, 76, 0.9), rgba(82, 43, 91, 0.8));
-    border: 1px solid rgba(133, 79, 108, 0.4);
+    background: linear-gradient(135deg, rgba(58, 57, 54, 0.9), rgba(90, 89, 86, 0.8));
+    border: 1px solid rgba(139, 125, 107, 0.4);
     backdrop-filter: blur(15px);
 }
 
@@ -636,7 +705,7 @@ section h2 {
     transition: all 0.3s ease;
     font-size: 0.95rem;
     letter-spacing: 0.01em;
-    font-family: 'Orbitron', 'Arial', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
 .admin-btn:hover {
@@ -649,7 +718,7 @@ section h2 {
 .admin-section {
     margin-bottom: 40px;
     padding-bottom: 32px;
-    border-bottom: 1px solid rgba(82, 43, 91, 0.3);
+    border-bottom: 1px solid rgba(90, 89, 86, 0.3);
 }
 
 .admin-section:last-child {
@@ -663,7 +732,7 @@ section h2 {
     margin-bottom: 20px;
     letter-spacing: -0.01em;
     color: var(--text-primary);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive */
@@ -755,4 +824,136 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Карточка товара на весь экран */
+.product-modal-content {
+    max-width: 95vw;
+    max-height: 95vh;
+    padding: 0;
+    overflow: hidden;
+}
+
+.product-full-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product-image-full {
+    width: 100%;
+    height: 50vh;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image-full img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image {
+    font-size: 8rem;
+    color: var(--text-primary);
+    opacity: 0.6;
+}
+
+.product-info-full {
+    padding: 30px;
+    background: var(--secondary-bg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-info-full h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.product-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.product-category {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.product-price {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--accent-color);
+    margin-bottom: 30px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-order-full {
+    font-size: 1.3rem;
+    padding: 20px 30px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Адаптивность для карточки товара */
+@media (max-width: 768px) {
+    .product-modal-content {
+        margin: 2% auto;
+        width: 98%;
+        max-height: 96vh;
+    }
+    
+    .product-image-full {
+        height: 40vh;
+    }
+    
+    .product-info-full {
+        padding: 20px;
+    }
+    
+    .product-info-full h2 {
+        font-size: 1.5rem;
+    }
+    
+    .product-price {
+        font-size: 2rem;
+    }
+    
+    .btn-order-full {
+        font-size: 1.1rem;
+        padding: 16px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-image-full {
+        height: 35vh;
+    }
+    
+    .product-info-full {
+        padding: 16px;
+    }
+    
+    .product-info-full h2 {
+        font-size: 1.3rem;
+    }
+    
+    .product-price {
+        font-size: 1.8rem;
+    }
 }

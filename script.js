@@ -9,6 +9,9 @@ let bouquetsDatabase = {
     any: []        // На любой случай
 };
 
+// База данных заказов
+let ordersDatabase = [];
+
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация Telegram Web App
@@ -22,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Загрузка данных из localStorage
     loadBouquetsFromStorage();
+    loadOrdersFromStorage();
     
     // Настройка обработчиков событий
     setupEventListeners();
@@ -159,7 +163,7 @@ function showCategoryBouquets(category) {
             <div class="bouquets-in-category">
                 ${bouquets.map(bouquet => `
                     <div class="bouquet-item">
-                        <div class="bouquet-image">
+                        <div class="bouquet-image" onclick="showProductModal('${bouquet.id}', '${category}')">
                             ${bouquet.image ? `<img src="${bouquet.image}" alt="${bouquet.name}">` : '🌺'}
                         </div>
                         <h4>${bouquet.name}</h4>
@@ -173,6 +177,56 @@ function showCategoryBouquets(category) {
     }
     
     modal.style.display = 'block';
+}
+
+// Показать карточку товара на весь экран
+function showProductModal(bouquetId, category) {
+    const bouquet = bouquetsDatabase[category].find(b => b.id === parseInt(bouquetId));
+    if (!bouquet) return;
+    
+    const categoryNames = {
+        love: '🌹 Любимой',
+        impress: '✨ Козырнуть',
+        sorry: '🥺 Облажался',
+        march8: '🌷 8 марта',
+        birthday: '🎂 День рождения',
+        any: '🎁 На любой случай'
+    };
+    
+    // Создаем модальное окно для товара
+    const productModal = document.createElement('div');
+    productModal.className = 'modal';
+    productModal.id = 'product-modal';
+    productModal.innerHTML = `
+        <div class="modal-content product-modal-content">
+            <span class="close" onclick="closeProductModal()">&times;</span>
+            <div class="product-full-view">
+                <div class="product-image-full">
+                    ${bouquet.image ? `<img src="${bouquet.image}" alt="${bouquet.name}">` : '<div class="no-image">🌺</div>'}
+                </div>
+                <div class="product-info-full">
+                    <h2>${bouquet.name}</h2>
+                    <p class="product-description">${bouquet.description}</p>
+                    <div class="product-category">${categoryNames[category]}</div>
+                    <div class="product-price">${bouquet.price.toLocaleString()} ₽</div>
+                    <button class="btn-primary btn-order-full" onclick="orderBouquet('${bouquet.name}', ${bouquet.price}, '${categoryNames[category]}')">
+                        💐 Заказать букет
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(productModal);
+    productModal.style.display = 'block';
+}
+
+// Закрыть карточку товара
+function closeProductModal() {
+    const modal = document.getElementById('product-modal');
+    if (modal) {
+        modal.remove();
+    }
 }
 
 // Заказать готовый букет
@@ -192,14 +246,19 @@ function orderBouquet(name, price, category) {
         timestamp: new Date().toISOString()
     };
     
+    // Сохраняем заказ локально
+    ordersDatabase.push(orderData);
+    saveOrdersToStorage();
+    
     // Отправляем данные в бота
     tg.sendData(JSON.stringify(orderData));
     
     // Показываем подтверждение
     tg.showAlert('✅ Заказ отправлен! Мы свяжемся с вами в ближайшее время.');
     
-    // Закрываем модальное окно
+    // Закрываем модальные окна
     document.getElementById('category-modal').style.display = 'none';
+    closeProductModal();
 }
 
 // Отправить запрос на создание букета
@@ -223,6 +282,10 @@ function sendCustomBouquetRequest() {
         wishes: formData.get('wishes') || 'Не указано',
         timestamp: new Date().toISOString()
     };
+    
+    // Сохраняем заказ локально
+    ordersDatabase.push(requestData);
+    saveOrdersToStorage();
     
     // Отправляем данные в бота
     tg.sendData(JSON.stringify(requestData));
@@ -352,7 +415,69 @@ function deleteBouquet(id, category) {
 }
 
 function viewOrders() {
-    tg.showAlert('📦 Функция просмотра заказов будет доступна в следующем обновлении!');
+    const modal = document.getElementById('manage-categories-modal');
+    modal.style.display = 'block';
+    
+    const container = document.getElementById('categories-list');
+    
+    if (ordersDatabase.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Пока нет заказов</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <h2 style="margin-bottom: 20px; text-align: center;">📦 Все заказы</h2>
+        ${ordersDatabase.map((order, index) => {
+            let orderType = '';
+            let orderDetails = '';
+            
+            if (order.type === 'bouquet_order') {
+                orderType = '💐 Заказ готового букета';
+                orderDetails = `
+                    <strong>Букет:</strong> ${order.name}<br>
+                    <strong>Категория:</strong> ${order.category}<br>
+                    <strong>Цена:</strong> ${order.price} ₽
+                `;
+            } else if (order.type === 'custom_bouquet_request') {
+                orderType = '🎨 Запрос на создание букета';
+                orderDetails = `
+                    <strong>Количество цветов:</strong> ${order.count}<br>
+                    <strong>Виды цветов:</strong> ${order.flowers}<br>
+                    <strong>Упаковка:</strong> ${order.package}<br>
+                    <strong>Открытка:</strong> ${order.card}<br>
+                    <strong>Пожелания:</strong> ${order.wishes}
+                `;
+            } else if (order.type === 'contact') {
+                orderType = '💌 Сообщение для связи';
+                orderDetails = `<strong>Сообщение:</strong> ${order.message}`;
+            }
+            
+            return `
+                <div style="padding: 20px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 15px; background: var(--secondary-bg);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: var(--accent-color);">${orderType}</h3>
+                        <button class="admin-btn" onclick="deleteOrder(${index})" style="padding: 8px 16px; font-size: 14px; background: #dc3545;">🗑️</button>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>От:</strong> @${order.user.username || 'Не указан'} (ID: ${order.user.id})<br>
+                        <strong>Дата:</strong> ${new Date(order.timestamp).toLocaleString('ru-RU')}
+                    </div>
+                    <div style="color: var(--text-secondary);">
+                        ${orderDetails}
+                    </div>
+                </div>
+            `;
+        }).join('')}
+    `;
+}
+
+function deleteOrder(index) {
+    if (confirm('Удалить этот заказ?')) {
+        ordersDatabase.splice(index, 1);
+        saveOrdersToStorage();
+        viewOrders();
+        tg.showAlert('✅ Заказ удален!');
+    }
 }
 
 function manageCategories() {
@@ -400,17 +525,44 @@ function setupModalHandlers() {
 
 // Сохранение и загрузка данных
 function saveBouquetsToStorage() {
-    localStorage.setItem('sshFlowersBouquets', JSON.stringify(bouquetsDatabase));
+    try {
+        localStorage.setItem('sshFlowersBouquets', JSON.stringify(bouquetsDatabase));
+    } catch (e) {
+        console.error('Ошибка сохранения букетов:', e);
+    }
 }
 
 function loadBouquetsFromStorage() {
-    const saved = localStorage.getItem('sshFlowersBouquets');
-    if (saved) {
-        try {
+    try {
+        const saved = localStorage.getItem('sshFlowersBouquets');
+        if (saved) {
             bouquetsDatabase = JSON.parse(saved);
-        } catch (e) {
-            console.error('Ошибка загрузки данных:', e);
         }
+    } catch (e) {
+        console.error('Ошибка загрузки букетов:', e);
+        bouquetsDatabase = {
+            love: [], impress: [], sorry: [], march8: [], birthday: [], any: []
+        };
+    }
+}
+
+function saveOrdersToStorage() {
+    try {
+        localStorage.setItem('sshFlowersOrders', JSON.stringify(ordersDatabase));
+    } catch (e) {
+        console.error('Ошибка сохранения заказов:', e);
+    }
+}
+
+function loadOrdersFromStorage() {
+    try {
+        const saved = localStorage.getItem('sshFlowersOrders');
+        if (saved) {
+            ordersDatabase = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error('Ошибка загрузки заказов:', e);
+        ordersDatabase = [];
     }
 }
 
