@@ -38,7 +38,7 @@ def init_db():
 
 @app.route('/')
 def home():
-    return "API для ssh.flowers работает!"
+    return "API для ssh.flowers работает! (Версия 1.1)"
 
 @app.route('/bouquets', methods=['GET'])
 def get_bouquets():
