@@ -47,11 +47,10 @@ def get_bouquets():
         cursor.execute('SELECT category, name, description, price, image, id FROM bouquets')
         bouquets_data = cursor.fetchall()
 
-    bouquets_dict = {
-        "love": [], "impress": [], "sorry": [], "march8": [],
-        "birthday": [], "any": []
-    }
+    bouquets_dict = {}
     for category, name, description, price, image, id in bouquets_data:
+        if category not in bouquets_dict:
+            bouquets_dict[category] = []
         bouquets_dict[category].append({
             "id": id,
             "name": name,
