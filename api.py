@@ -146,6 +146,20 @@ def delete_order(order_id):
         return jsonify({"error": "Order not found"}), 404
     return jsonify({"message": "Order deleted"}), 200
 
+@app.route('/debug/bouquets', methods=['GET'])
+def debug_bouquets():
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM bouquets')
+        rows = cursor.fetchall()
+        # Get column names
+        cols = [description[0] for description in cursor.description]
+        # Convert to list of dictionaries for easier viewing
+        bouquets_raw_data = []
+        for row in rows:
+            bouquets_raw_data.append(dict(zip(cols, row)))
+    return jsonify(bouquets_raw_data)
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5000)
