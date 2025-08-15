@@ -151,9 +151,9 @@ async function showCategoryBouquets(category) {
     const bouquetsContainer = document.getElementById('bouquets-in-category');
     
     const categoryNames = {
-        love: '🌹 Любимой',
-        impress: '✨ Козырнуть',
-        sorry: '🥺 Облажался',
+        love: '🌹 Для Самых Самых',
+        impress: '✨ У тебя не будет второго шанса произвести первое впечатление',
+        sorry: '🥺 Понять и простить',
         march8: '🌷 8 марта',
         birthday: '🎂 День рождения',
         any: '🎁 На любой случай'
@@ -201,9 +201,9 @@ async function showProductModal(bouquetId, category) {
     if (!bouquet) return;
     
     const categoryNames = {
-        love: '🌹 Любимой',
-        impress: '✨ Козырнуть',
-        sorry: '🥺 Облажался',
+        love: '🌹 Для Самых Самых',
+        impress: '✨ У тебя не будет второго шанса произвести первое впечатление',
+        sorry: '🥺 Понять и простить',
         march8: '🌷 8 марта',
         birthday: '🎂 День рождения',
         any: '🎁 На любой случай'
@@ -545,12 +545,18 @@ async function viewOrders() {
                 `;
             } else if (order.type === 'custom_bouquet_request') {
                 orderType = '🎨 Запрос на создание букета';
+                const count = order.count && order.count.toString().trim().toLowerCase() !== 'undefined' ? `<strong>Количество цветов:</strong> ${order.count}<br>` : '';
+                const flowers = order.flowers && order.flowers.toString().trim().toLowerCase() !== 'undefined' ? `<strong>Виды цветов:</strong> ${order.flowers}<br>` : '';
+                const packageType = order.package && order.package.toString().trim().toLowerCase() !== 'undefined' ? `<strong>Упаковка:</strong> ${order.package}<br>` : '';
+                const card = order.card && order.card.toString().trim().toLowerCase() !== 'undefined' && order.card.toString().trim().toLowerCase() !== 'нет' ? `<strong>Открытка:</strong> ${order.card}<br>` : '';
+                const wishes = order.wishes && order.wishes.toString().trim().toLowerCase() !== 'undefined' ? `<strong>Пожелания:</strong> ${order.wishes}` : '';
+                
                 orderDetails = `
-                    <strong>Количество цветов:</strong> ${order.count}<br>
-                    <strong>Виды цветов:</strong> ${order.flowers}<br>
-                    <strong>Упаковка:</strong> ${order.package}<br>
-                    <strong>Открытка:</strong> ${order.card}<br>
-                    <strong>Пожелания:</strong> ${order.wishes}
+                    ${count}
+                    ${flowers}
+                    ${packageType}
+                    ${card}
+                    ${wishes}
                 `;
             } else if (order.type === 'contact') {
                 orderType = '💌 Сообщение для связи';
@@ -613,9 +619,9 @@ async function manageCategories() {
     
     const container = document.getElementById('categories-list');
     const categoryNames = {
-        love: '🌹 Любимой',
-        impress: '✨ Козырнуть',
-        sorry: '🥺 Облажался',
+        love: '🌹 Для Самых Самых',
+        impress: '✨ У тебя не будет второго шанса произвести первое впечатление',
+        sorry: '🥺 Понять и простить',
         march8: '🌷 8 марта',
         birthday: '🎂 День рождения',
         any: '🎁 На любой случай'

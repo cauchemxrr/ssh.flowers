@@ -41,6 +41,7 @@ async def handle_webapp_data(msg: types.Message):
         
         try:
             order_data = json.loads(data)
+            logging.info(f"Распарсенные данные заказа: {order_data}") # Добавлено логирование
         except json.JSONDecodeError:
             await msg.answer("❌ Ошибка при обработке данных заказа.")
             return
@@ -121,14 +122,16 @@ async def handle_custom_bouquet_request(msg: types.Message, request_data: dict):
         request_text += f"🆔 **ID:** {user.get('id', 'Не указан')}\n"
         request_text += f"📅 **Дата:** {timestamp}\n\n"
         request_text += "🌺 **Детали букета:**\n"
-        request_text += f"• Количество цветов: {count}\n"
-        request_text += f"• Виды цветов: {flowers}\n"
-        request_text += f"• Упаковка: {package}\n"
 
-        if card and card.lower() != 'нет':
+        if count and count.strip() and count.strip().lower() != 'undefined':
+            request_text += f"• Количество цветов: {count}\n"
+        if flowers and flowers.strip() and flowers.strip().lower() != 'undefined':
+            request_text += f"• Виды цветов: {flowers}\n"
+        if package and package.strip() and package.strip().lower() != 'undefined':
+            request_text += f"• Упаковка: {package}\n"
+        if card and card.strip() and card.strip().lower() != 'undefined' and card.strip().lower() != 'нет':
             request_text += f"• Открытка: {card}\n"
-
-        if wishes:
+        if wishes and wishes.strip() and wishes.strip().lower() != 'undefined':
             request_text += f"• Пожелания: {wishes}\n"
 
         request_text += f"\n💬 **Ответить:** @{user.get('username', 'Не указан')}"
