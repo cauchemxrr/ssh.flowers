@@ -17,7 +17,7 @@ python --version
 
 echo.
 echo 📦 Установка зависимостей...
-python -m pip install aiogram==2.25.1
+python -m pip install -r requirements.txt
 
 echo.
 echo 🚀 Запуск бота...
