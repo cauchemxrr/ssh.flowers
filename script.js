@@ -43,7 +43,7 @@ async function loadDataFromAPI() {
 
     } catch (error) {
         console.error('Ошибка загрузки данных из API:', error);
-        tg.showAlert('❌ Ошибка загрузки данных. Пожалуйста, попробуйте позже.');
+        tg.showAlert(`❌ Ошибка загрузки данных: ${error.message || error}. Пожалуйста, попробуйте позже.`);
     }
 }
 
@@ -281,7 +281,7 @@ async function orderBouquet(name, price, category) {
         }
     } catch (error) {
         console.error('Ошибка отправки заказа:', error);
-        tg.showAlert('❌ Произошла ошибка при отправке заказа. Попробуйте еще раз.');
+        tg.showAlert(`❌ Произошла ошибка при отправке заказа: ${error.message || error}. Попробуйте еще раз.`);
     }
 
     // Отправляем данные в бота (для уведомления в Telegram)
@@ -333,7 +333,7 @@ async function sendCustomBouquetRequest() {
         }
     } catch (error) {
         console.error('Ошибка отправки запроса на создание букета:', error);
-        tg.showAlert('❌ Произошла ошибка при отправке запроса. Попробуйте еще раз.');
+        tg.showAlert(`❌ Произошла ошибка при отправке запроса: ${error.message || error}. Попробуйте еще раз.`);
     }
 
     // Отправляем данные в бота (для уведомления в Telegram)
@@ -380,7 +380,7 @@ async function sendContactMessage() {
         }
     } catch (error) {
         console.error('Ошибка отправки сообщения для связи:', error);
-        tg.showAlert('❌ Произошла ошибка при отправке сообщения. Попробуйте еще раз.');
+        tg.showAlert(`❌ Произошла ошибка при отправке сообщения: ${error.message || error}. Попробуйте еще раз.`);
     }
 
     // Отправляем данные в бота (для уведомления в Telegram)
@@ -486,7 +486,7 @@ async function addNewBouquet() {
         }
     } catch (error) {
         console.error('Ошибка добавления букета:', error);
-        tg.showAlert('❌ Произошла ошибка при добавлении букета. Попробуйте еще раз.');
+        tg.showAlert(`❌ Произошла ошибка при добавлении букета: ${error.message || error}. Попробуйте еще раз.`);
     }
 }
 
@@ -508,7 +508,7 @@ async function deleteBouquet(id, category) {
             }
         } catch (error) {
             console.error('Ошибка удаления букета:', error);
-            tg.showAlert('❌ Произошла ошибка при удалении букета. Попробуйте еще раз.');
+            tg.showAlert(`❌ Произошла ошибка при удалении букета: ${error.message || error}. Попробуйте еще раз.`);
         }
     }
 }
@@ -594,7 +594,7 @@ async function deleteOrder(id) {
             }
         } catch (error) {
             console.error('Ошибка удаления заказа:', error);
-            tg.showAlert('❌ Произошла ошибка при удалении заказа. Попробуйте еще раз.');
+            tg.showAlert(`❌ Произошла ошибка при удалении заказа: ${error.message || error}. Попробуйте еще раз.`);
         }
     }
 }
@@ -686,12 +686,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // Обработка ошибок
 window.addEventListener('error', function(e) {
     console.error('Ошибка в приложении:', e.error);
-    tg.showAlert('Произошла ошибка. Попробуйте перезагрузить приложение.');
+    tg.showAlert(`Произошла ошибка в приложении: ${e.message || e.error.message || e.error}. Попробуйте перезагрузить приложение.`);
 });
 
 // Обработка необработанных промисов
 window.addEventListener('unhandledrejection', function(e) {
     console.error('Необработанная ошибка промиса:', e.reason);
-    tg.showAlert('Произошла ошибка. Попробуйте еще раз.');
+    tg.showAlert(`Произошла ошибка промиса: ${e.reason.message || e.reason}. Попробуйте еще раз.`);
 });
 
