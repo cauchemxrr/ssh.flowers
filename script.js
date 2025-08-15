@@ -1,6 +1,9 @@
 // Telegram Web App инициализация
 let tg = window.Telegram.WebApp;
 
+// Базовый URL для вашего Flask API
+const API_BASE_URL = 'https://ssh-flowers.onrender.com'; // Измените на URL вашего сервера при деплое
+
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация Telegram Web App
@@ -13,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Загрузка данных из общей базы
-    loadSharedData();
+    loadDataFromAPI();
     
     // Настройка обработчиков событий
     setupEventListeners();
@@ -22,12 +25,26 @@ document.addEventListener('DOMContentLoaded', function() {
     displayUserInfo();
 });
 
-// Загрузка данных из общей базы
-function loadSharedData() {
-    // Загружаем данные из общей базы
-    window.SharedData.loadSharedBouquets();
-    window.SharedData.loadSharedOrders();
-    console.log('Данные загружены из общей базы');
+// Загрузка данных из API
+async function loadDataFromAPI() {
+    try {
+        const bouquetsResponse = await fetch(`${API_BASE_URL}/bouquets`);
+        const ordersResponse = await fetch(`${API_BASE_URL}/orders`);
+
+        const bouquetsData = await bouquetsResponse.json();
+        const ordersData = await ordersResponse.json();
+
+        // Здесь мы будем хранить данные, загруженные из API
+        window.bouquetsDatabase = bouquetsData; 
+        window.ordersDatabase = ordersData;
+
+        console.log('Данные букетов загружены из API:', window.bouquetsDatabase);
+        console.log('Данные заказов загружены из API:', window.ordersDatabase);
+
+    } catch (error) {
+        console.error('Ошибка загрузки данных из API:', error);
+        tg.showAlert('❌ Ошибка загрузки данных. Пожалуйста, попробуйте позже.');
+    }
 }
 
 // Настройка обработчиков событий
@@ -128,7 +145,7 @@ function displayUserInfo() {
 }
 
 // Показать букеты в категории
-function showCategoryBouquets(category) {
+async function showCategoryBouquets(category) {
     const modal = document.getElementById('category-modal');
     const categoryTitle = document.getElementById('category-title');
     const bouquetsContainer = document.getElementById('bouquets-in-category');
@@ -144,9 +161,8 @@ function showCategoryBouquets(category) {
     
     categoryTitle.textContent = categoryNames[category] || '💐 Категория';
     
-    // Получаем данные из общей базы
-    const bouquetsDatabase = window.SharedData.getSharedBouquets();
-    const bouquets = bouquetsDatabase[category] || [];
+    // Получаем данные из общей базы (из глобальной переменной)
+    const bouquets = window.bouquetsDatabase[category] || [];
     
     if (bouquets.length === 0) {
         bouquetsContainer.innerHTML = `
@@ -178,8 +194,9 @@ function showCategoryBouquets(category) {
 }
 
 // Показать карточку товара на весь экран
-function showProductModal(bouquetId, category) {
-    const bouquetsDatabase = window.SharedData.getSharedBouquets();
+async function showProductModal(bouquetId, category) {
+    // Получаем данные из общей базы (из глобальной переменной)
+    const bouquetsDatabase = window.bouquetsDatabase;
     const bouquet = bouquetsDatabase[category].find(b => b.id === parseInt(bouquetId));
     if (!bouquet) return;
     
@@ -229,7 +246,7 @@ function closeProductModal() {
 }
 
 // Заказать готовый букет
-function orderBouquet(name, price, category) {
+async function orderBouquet(name, price, category) {
     const user = tg.initDataUnsafe?.user || {};
     
     const orderData = {
@@ -245,14 +262,30 @@ function orderBouquet(name, price, category) {
         timestamp: new Date().toISOString()
     };
     
-    // Сохраняем заказ в общую базу
-    window.SharedData.addSharedOrder(orderData);
-    
-    // Отправляем данные в бота
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+            tg.showAlert('✅ Заказ отправлен! Мы свяжемся с вами в ближайшее время.');
+            // Перезагружаем заказы для админ-панели
+            loadDataFromAPI(); 
+        } else {
+            tg.showAlert(`❌ Ошибка заказа: ${result.error || response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки заказа:', error);
+        tg.showAlert('❌ Произошла ошибка при отправке заказа. Попробуйте еще раз.');
+    }
+
+    // Отправляем данные в бота (для уведомления в Telegram)
     tg.sendData(JSON.stringify(orderData));
-    
-    // Показываем подтверждение
-    tg.showAlert('✅ Заказ отправлен! Мы свяжемся с вами в ближайшее время.');
     
     // Закрываем модальные окна
     document.getElementById('category-modal').style.display = 'none';
@@ -260,7 +293,7 @@ function orderBouquet(name, price, category) {
 }
 
 // Отправить запрос на создание букета
-function sendCustomBouquetRequest() {
+async function sendCustomBouquetRequest() {
     const form = document.getElementById('bouquet-form');
     const formData = new FormData(form);
     
@@ -281,21 +314,37 @@ function sendCustomBouquetRequest() {
         timestamp: new Date().toISOString()
     };
     
-    // Сохраняем заказ в общую базу
-    window.SharedData.addSharedOrder(requestData);
-    
-    // Отправляем данные в бота
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+            tg.showAlert('✅ Ваш запрос отправлен! Мы свяжемся с вами для уточнения деталей и цены.');
+            // Перезагружаем заказы для админ-панели
+            loadDataFromAPI();
+        } else {
+            tg.showAlert(`❌ Ошибка отправки запроса: ${result.error || response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки запроса на создание букета:', error);
+        tg.showAlert('❌ Произошла ошибка при отправке запроса. Попробуйте еще раз.');
+    }
+
+    // Отправляем данные в бота (для уведомления в Telegram)
     tg.sendData(JSON.stringify(requestData));
-    
-    // Показываем подтверждение
-    tg.showAlert('✅ Ваш запрос отправлен! Мы свяжемся с вами для уточнения деталей и цены.');
     
     // Очищаем форму
     form.reset();
 }
 
 // Отправить сообщение для связи
-function sendContactMessage() {
+async function sendContactMessage() {
     const form = document.getElementById('contact-form');
     const formData = new FormData(form);
     
@@ -312,29 +361,51 @@ function sendContactMessage() {
         timestamp: new Date().toISOString()
     };
     
-    // Отправляем данные в бота
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(contactData)
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+            tg.showAlert('✅ Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.');
+            // Перезагружаем заказы для админ-панели
+            loadDataFromAPI();
+        } else {
+            tg.showAlert(`❌ Ошибка отправки сообщения: ${result.error || response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки сообщения для связи:', error);
+        tg.showAlert('❌ Произошла ошибка при отправке сообщения. Попробуйте еще раз.');
+    }
+
+    // Отправляем данные в бота (для уведомления в Telegram)
     tg.sendData(JSON.stringify(contactData));
-    
-    // Показываем подтверждение
-    tg.showAlert('✅ Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.');
     
     // Очищаем форму
     form.reset();
 }
 
 // Админ функции
-function manageBouquets() {
+async function manageBouquets() {
     const modal = document.getElementById('manage-bouquets-modal');
     modal.style.display = 'block';
-    showExistingBouquets();
+    await showExistingBouquets();
 }
 
-function showExistingBouquets() {
+async function showExistingBouquets() {
     const container = document.getElementById('existing-bouquets');
     let allBouquets = [];
     
-    // Получаем данные из общей базы
-    const bouquetsDatabase = window.SharedData.getSharedBouquets();
+    // Загружаем данные из API
+    await loadDataFromAPI();
+    
+    // Получаем данные из глобальной переменной
+    const bouquetsDatabase = window.bouquetsDatabase;
     
     // Собираем все букеты из всех категорий
     Object.keys(bouquetsDatabase).forEach(category => {
@@ -372,7 +443,7 @@ function showExistingBouquets() {
     `).join('');
 }
 
-function addNewBouquet() {
+async function addNewBouquet() {
     const category = document.getElementById('bouquet-category').value;
     const name = document.getElementById('bouquet-name').value;
     const description = document.getElementById('bouquet-description').value;
@@ -385,40 +456,74 @@ function addNewBouquet() {
     }
     
     const newBouquet = {
-        id: Date.now(),
+        category: category,
         name: name,
         description: description,
         price: price,
         image: imageInput.dataset.base64 || null
     };
     
-    // Добавляем букет в общую базу
-    window.SharedData.addSharedBouquet(category, newBouquet);
-    
-    document.getElementById('add-bouquet-form').reset();
-    document.querySelector('.file-upload-label').innerHTML = '📷 Нажмите для выбора фото или сделайте снимок';
-    document.querySelector('.file-upload-label').style.borderColor = 'var(--border-color)';
-    showExistingBouquets();
-    tg.showAlert('✅ Букет успешно добавлен!');
-}
+    try {
+        const response = await fetch(`${API_BASE_URL}/bouquets`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newBouquet)
+        });
+        const result = await response.json();
 
-function deleteBouquet(id, category) {
-    if (confirm('Вы уверены, что хотите удалить этот букет?')) {
-        // Удаляем букет из общей базы
-        window.SharedData.deleteSharedBouquet(category, id);
-        showExistingBouquets();
-        tg.showAlert('✅ Букет удален!');
+        if (response.ok) {
+            tg.showAlert('✅ Букет успешно добавлен!');
+            document.getElementById('add-bouquet-form').reset();
+            document.querySelector('.file-upload-label').innerHTML = '📷 Нажмите для выбора фото или сделайте снимок';
+            document.querySelector('.file-upload-label').style.borderColor = 'var(--border-color)';
+            // Перезагружаем букеты и обновляем список
+            await loadDataFromAPI(); 
+            showExistingBouquets();
+        } else {
+            tg.showAlert(`❌ Ошибка добавления букета: ${result.error || response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Ошибка добавления букета:', error);
+        tg.showAlert('❌ Произошла ошибка при добавлении букета. Попробуйте еще раз.');
     }
 }
 
-function viewOrders() {
+async function deleteBouquet(id, category) {
+    if (confirm('Вы уверены, что хотите удалить этот букет?')) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/bouquets/${id}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                tg.showAlert('✅ Букет удален!');
+                // Перезагружаем букеты и обновляем список
+                await loadDataFromAPI(); 
+                showExistingBouquets();
+            } else {
+                tg.showAlert(`❌ Ошибка удаления букета: ${result.error || response.statusText}`);
+            }
+        } catch (error) {
+            console.error('Ошибка удаления букета:', error);
+            tg.showAlert('❌ Произошла ошибка при удалении букета. Попробуйте еще раз.');
+        }
+    }
+}
+
+async function viewOrders() {
     const modal = document.getElementById('manage-categories-modal');
     modal.style.display = 'block';
     
     const container = document.getElementById('categories-list');
     
-    // Получаем заказы из общей базы
-    const ordersDatabase = window.SharedData.getSharedOrders();
+    // Загружаем данные из API
+    await loadDataFromAPI();
+    
+    // Получаем заказы из глобальной переменной
+    const ordersDatabase = window.ordersDatabase;
     
     if (ordersDatabase.length === 0) {
         container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Пока нет заказов</p>';
@@ -456,7 +561,7 @@ function viewOrders() {
                 <div style="padding: 20px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 15px; background: var(--secondary-bg);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3 style="margin: 0; color: var(--accent-color);">${orderType}</h3>
-                        <button class="admin-btn" onclick="deleteOrder(${index})" style="padding: 8px 16px; font-size: 14px; background: #dc3545;">🗑️</button>
+                        <button class="admin-btn" onclick="deleteOrder(${order.id})" style="padding: 8px 16px; font-size: 14px; background: #dc3545;">🗑️</button>
                     </div>
                     <div style="margin-bottom: 15px;">
                         <strong>От:</strong> @${order.user.username || 'Не указан'} (ID: ${order.user.id})<br>
@@ -471,16 +576,30 @@ function viewOrders() {
     `;
 }
 
-function deleteOrder(index) {
+async function deleteOrder(id) {
     if (confirm('Удалить этот заказ?')) {
-        // Удаляем заказ из общей базы
-        window.SharedData.deleteSharedOrder(index);
-        viewOrders();
-        tg.showAlert('✅ Заказ удален!');
+        try {
+            const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                tg.showAlert('✅ Заказ удален!');
+                // Перезагружаем заказы и обновляем список
+                await loadDataFromAPI(); 
+                viewOrders();
+            } else {
+                tg.showAlert(`❌ Ошибка удаления заказа: ${result.error || response.statusText}`);
+            }
+        } catch (error) {
+            console.error('Ошибка удаления заказа:', error);
+            tg.showAlert('❌ Произошла ошибка при удалении заказа. Попробуйте еще раз.');
+        }
     }
 }
 
-function manageCategories() {
+async function manageCategories() {
     const modal = document.getElementById('manage-categories-modal');
     modal.style.display = 'block';
     
@@ -494,8 +613,11 @@ function manageCategories() {
         any: '🎁 На любой случай'
     };
     
-    // Получаем данные из общей базы
-    const bouquetsDatabase = window.SharedData.getSharedBouquets();
+    // Загружаем данные из API
+    await loadDataFromAPI();
+    
+    // Получаем данные из глобальной переменной
+    const bouquetsDatabase = window.bouquetsDatabase;
     
     container.innerHTML = Object.keys(categoryNames).map(category => {
         const count = bouquetsDatabase[category] ? bouquetsDatabase[category].length : 0;
