@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ssh.flowers - Магазин букетов</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="app-header">
+            <h1>ssh.flowers</h1>
+            <div class="user-info">
+                <div id="user-avatar" class="avatar">👤</div>
+                <span id="user-name">Пользователь</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Categories Section -->
+        <section>
+            <h2>💐 Категории букетов</h2>
+            <div class="category-grid">
+                <div class="category-card" data-category="love">
+                    <span class="category-icon">🌹</span>
+                    <h3>Любимой</h3>
+                    <p>Романтичные букеты для самых дорогих</p>
+                </div>
+                <div class="category-card" data-category="impress">
+                    <span class="category-icon">✨</span>
+                    <h3>Козырнуть</h3>
+                    <p>Эксклюзивные букеты для особых случаев</p>
+                </div>
+                <div class="category-card" data-category="sorry">
+                    <span class="category-icon">🥺</span>
+                    <h3>Облажался</h3>
+                    <p>Букеты для примирения и извинений</p>
+                </div>
+                <div class="category-card" data-category="march8">
+                    <span class="category-icon">🌷</span>
+                    <h3>8 марта</h3>
+                    <p>Праздничные букеты для прекрасных дам</p>
+                </div>
+                <div class="category-card" data-category="birthday">
+                    <span class="category-icon">🎂</span>
+                    <h3>День рождения</h3>
+                    <p>Яркие букеты для дня рождения</p>
+                </div>
+                <div class="category-card" data-category="any">
+                    <span class="category-icon">🎁</span>
+                    <h3>На любой случай</h3>
+                    <p>Универсальные букеты для всех поводов</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custom Bouquet Section -->
+        <section>
+            <h2>🎨 Создать свой букет</h2>
+            <form id="bouquet-form">
+                <div class="form-group">
+                    <label for="flower-count">Количество цветов:</label>
+                    <input type="number" id="flower-count" name="flower-count" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="flower-types">Виды цветов:</label>
+                    <select id="flower-types" name="flower-types" required>
+                        <option value="">Выберите цветы</option>
+                        <option value="Розы">Розы</option>
+                        <option value="Тюльпаны">Тюльпаны</option>
+                        <option value="Пионы">Пионы</option>
+                        <option value="Хризантемы">Хризантемы</option>
+                        <option value="Герберы">Герберы</option>
+                        <option value="Микс">Микс разных цветов</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="package">Упаковка:</label>
+                    <select id="package" name="package" required>
+                        <option value="">Выберите упаковку</option>
+                        <option value="Бумага">Бумага</option>
+                        <option value="Пленка">Пленка</option>
+                        <option value="Коробка">Коробка</option>
+                        <option value="Корзина">Корзина</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="card">Открытка:</label>
+                    <input type="text" id="card" name="card" placeholder="Текст открытки (необязательно)">
+                </div>
+                <div class="form-group">
+                    <label for="wishes">Пожелания:</label>
+                    <textarea id="wishes" name="wishes" placeholder="Ваши пожелания к букету"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">🎨 Отправить запрос</button>
+            </form>
+        </section>
+
+        <!-- Contact Section -->
+        <section>
+            <h2>💌 Связаться с нами</h2>
+            <form id="contact-form">
+                <div class="form-group">
+                    <label for="contact-message">Ваше сообщение:</label>
+                    <textarea id="contact-message" name="contact-message" placeholder="Напишите нам..." required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">📤 Отправить</button>
+            </form>
+        </section>
+
+        <!-- Admin Panel (только для админа) -->
+        <section id="admin-panel" style="display: none;">
+            <h2>👑 Админ панель</h2>
+            <div class="admin-controls">
+                <button class="admin-btn" onclick="manageBouquets()">💐 Управление букетами</button>
+                <button class="admin-btn" onclick="viewOrders()">📦 Просмотр заказов</button>
+                <button class="admin-btn" onclick="manageCategories()">📂 Управление категориями</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="category-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="category-title">💐 Категория</h2>
+            <div id="bouquets-in-category"></div>
+        </div>
+    </div>
+
+    <!-- Manage Bouquets Modal -->
+    <div id="manage-bouquets-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>💐 Управление букетами</h2>
+            
+            <!-- Add New Bouquet Form -->
+            <div class="admin-section">
+                <h3>➕ Добавить новый букет</h3>
+                <form id="add-bouquet-form">
+                    <div class="form-group">
+                        <label for="bouquet-category">Категория:</label>
+                        <select id="bouquet-category" name="bouquet-category" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="love">🌹 Любимой</option>
+                            <option value="impress">✨ Козырнуть</option>
+                            <option value="sorry">🥺 Облажался</option>
+                            <option value="march8">🌷 8 марта</option>
+                            <option value="birthday">🎂 День рождения</option>
+                            <option value="any">🎁 На любой случай</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bouquet-name">Название букета:</label>
+                        <input type="text" id="bouquet-name" name="bouquet-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bouquet-description">Описание:</label>
+                        <textarea id="bouquet-description" name="bouquet-description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="bouquet-price">Цена (₽):</label>
+                        <input type="number" id="bouquet-price" name="bouquet-price" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bouquet-image">Фото букета:</label>
+                        <div class="file-upload">
+                            <input type="file" id="bouquet-image" name="bouquet-image" accept="image/*" capture="environment">
+                            <label for="bouquet-image" class="file-upload-label">
+                                📷 Нажмите для выбора фото или сделайте снимок
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">➕ Добавить букет</button>
+                </form>
+            </div>
+
+            <!-- Existing Bouquets -->
+            <div class="admin-section">
+                <h3>📋 Существующие букеты</h3>
+                <div id="existing-bouquets"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Categories Modal -->
+    <div id="manage-categories-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="categories-list"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="shared_data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
