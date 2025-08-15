@@ -561,7 +561,7 @@ async function viewOrders() {
                 <div style="padding: 20px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 15px; background: var(--secondary-bg);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3 style="margin: 0; color: var(--accent-color);">${orderType}</h3>
-                        <button class="admin-btn" onclick="deleteOrder(${order.id})" style="padding: 8px 16px; font-size: 14px; background: #dc3545;">🗑️</button>
+                        ${order.id ? `<button class="admin-btn" onclick="deleteOrder(${order.id})" style="padding: 8px 16px; font-size: 14px; background: #dc3545;">🗑️</button>` : ''}
                     </div>
                     <div style="margin-bottom: 15px;">
                         <strong>От:</strong> @${order.user.username || 'Не указан'} (ID: ${order.user.id})<br>
@@ -577,9 +577,17 @@ async function viewOrders() {
 }
 
 async function deleteOrder(id) {
+    // Убедимся, что id - это число
+    const orderId = parseInt(id);
+    if (isNaN(orderId)) {
+        tg.showAlert('❌ Некорректный ID заказа для удаления.');
+        console.error('Некорректный ID заказа:', id);
+        return;
+    }
+
     if (confirm('Удалить этот заказ?')) {
         try {
-            const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
                 method: 'DELETE'
             });
             const result = await response.json();
